@@ -86,14 +86,14 @@ export function WelcomeGuide({ onDirectOpen, onStartGuidedTour, onOpenOnline, on
                 onClick={onStartGuidedTour}
               >
                 跟随指引查看功能
-                <ArrowRight size={16} />
+                <Play size={15} />
               </button>
               <button
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                 onClick={onDirectOpen}
               >
                 直接查看工作台
-                <Play size={15} />
+                <ArrowRight size={16} />
               </button>
             </div>
           </section>

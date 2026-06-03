@@ -86,7 +86,6 @@ export function QueuePanel({ cases, activeCaseId, onCaseChange }: QueuePanelProp
               <div className="flex gap-2.5">
                 <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 text-sm font-semibold text-white">
                   {item.customer.name.slice(0, 1)}
-                  {index === 0 && <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-emerald-500" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
