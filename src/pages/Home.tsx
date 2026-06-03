@@ -25,7 +25,7 @@ const tourSteps: TourStep[] = [
     targetId: "online-workspace",
     pageHint: "客服工作流程",
     title: "客服作业流",
-    desc: "用户转人工后，客服需要理解上下文、回复用户、建工单单跟进(若有必要)，再进入工单处理和回电。",
+    desc: "用户转人工后，客服需要理解上下文、回复用户、建工单跟进(若有必要)，再进入工单处理和回电。",
   },
   {
     targetId: "smart-summary",
@@ -43,7 +43,7 @@ const tourSteps: TourStep[] = [
   {
     targetId: "ticket-suggestion",
     pageHint: "工单智能建议",
-    title: "AI给出客服工单处理方案",
+    title: "AI 给出客服工单处理方案",
     desc: "智能建议把问题概述、举证情况、知识依据(可跳转)和方案指引放在一起，客服能看到推荐动作，也能看到为什么这么推荐。",
     bubblePlacement: "left",
     bubbleOffsetY: -120,
@@ -53,7 +53,7 @@ const tourSteps: TourStep[] = [
     targetId: "knowledge-table",
     pageHint: "知识库与实现原理",
     title: "智能建议知识库示例",
-    desc: "使用RAG、ReAct 、Self-reflection等agent架构提升方案生成准确率，同步进行知识库清洗",
+    desc: "使用 RAG、ReAct、Self-reflection 等 agent 架构提升方案生成准确率，同步进行知识库清洗。",
     bubbleOffsetY: -180,
   },
   {

@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { ArrowRight, BookOpen, Bot, ClipboardList, FileText, Headphones, PhoneCall, Play, ShieldCheck, Sparkles, TimerReset, Workflow } from "lucide-react";
+import { ArrowRight, Bot, ClipboardList, Headphones, PhoneCall, Play, ShieldCheck, Sparkles, TimerReset, Workflow } from "lucide-react";
 
 interface WelcomeGuideProps {
   onDirectOpen: () => void;
@@ -79,7 +79,7 @@ export function WelcomeGuide({ onDirectOpen, onStartGuidedTour, onOpenOnline, on
               客服AI辅助工作台Demo
             </div>
             <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-tight">个人工作内容demo</h1>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600">此demo主要展示本人工作内容，减少双方沟通时信息gap。围绕AI如何帮助客服理解上下文、辅助建单、推荐工单处理方案，并将回电时效从复杂的人工手算变成系统化规则。</p>
+            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600">此demo主要展示本人工作内容，减少双方沟通时信息gap。演示AI帮助客服理解上下文、辅助建单、推荐工单处理方案，并展示回电时效如何在工单系统上显示。</p>
             <div className="mt-8 flex items-center gap-3">
               <button
                 className="inline-flex items-center gap-2 rounded-xl bg-teal-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-950/30 transition hover:bg-teal-400"
