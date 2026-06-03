@@ -87,6 +87,9 @@ function expandTicketRecords(records: TicketListRecord[], total: number, prefix:
 export default function Home() {
   const [activeCaseId, setActiveCaseId] = useState<CaseId>("damage");
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showWorkspaceLayer, setShowWorkspaceLayer] = useState(false);
+  const [workspaceEntered, setWorkspaceEntered] = useState(false);
+  const [screenTransitionTarget, setScreenTransitionTarget] = useState<"workspace" | "welcome" | null>(null);
   const [guidedStepIndex, setGuidedStepIndex] = useState<number | null>(null);
   const [mode, setMode] = useState<WorkspaceMode>("online");
   const [activeTicketTab, setActiveTicketTab] = useState("我的待处理工单");
@@ -120,12 +123,56 @@ export default function Home() {
     [filteredTicketRecords]
   );
 
-  const openOnlineWorkspace = () => {
-    setActiveCaseId("damage");
-    setMode("online");
-    setSelectedKnowledgeId(null);
+  const runWorkspaceTransition = (configure: () => void, options?: { guidedStartIndex?: number }) => {
+    configure();
+    setShowWorkspaceLayer(true);
+    setWorkspaceEntered(false);
+    setShowWelcome(true);
+    setScreenTransitionTarget("workspace");
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setWorkspaceEntered(true);
+      });
+    });
+
+    window.setTimeout(() => {
+      setShowWelcome(false);
+      setScreenTransitionTarget(null);
+
+      if (options?.guidedStartIndex !== undefined) {
+        window.setTimeout(() => {
+          setGuidedStepIndex(options.guidedStartIndex ?? null);
+        }, 180);
+      }
+    }, 260);
+  };
+
+  const runWelcomeTransition = () => {
     setGuidedStepIndex(null);
-    setShowWelcome(false);
+    setShowWelcome(true);
+    setScreenTransitionTarget("welcome");
+    setWorkspaceEntered(false);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setScreenTransitionTarget(null);
+      });
+    });
+
+    window.setTimeout(() => {
+      setShowWorkspaceLayer(false);
+    }, 260);
+  };
+
+  const openOnlineWorkspace = () => {
+    runWorkspaceTransition(() => {
+      setActiveCaseId("damage");
+      setMode("online");
+      setSelectedKnowledgeId(null);
+      setGuidedStepIndex(null);
+      setSelectedTicket(null);
+    });
   };
 
   const selectTicketSuggestionDemo = () => {
@@ -140,25 +187,32 @@ export default function Home() {
   };
 
   const openTicketSuggestionDemo = () => {
-    selectTicketSuggestionDemo();
-    setGuidedStepIndex(null);
-    setShowWelcome(false);
+    runWorkspaceTransition(() => {
+      selectTicketSuggestionDemo();
+      setGuidedStepIndex(null);
+    });
   };
 
   const openKnowledgeDemo = () => {
-    setSelectedKnowledgeId("KB-BRAND-0001");
-    setMode("knowledge");
-    setGuidedStepIndex(null);
-    setShowWelcome(false);
+    runWorkspaceTransition(() => {
+      setSelectedKnowledgeId("KB-BRAND-0001");
+      setMode("knowledge");
+      setGuidedStepIndex(null);
+      setSelectedTicket(null);
+    });
   };
 
   const startGuidedTour = () => {
-    setActiveCaseId("damage");
-    setSelectedTicket(null);
-    setSelectedKnowledgeId(null);
-    setMode("online");
-    setGuidedStepIndex(0);
-    setShowWelcome(false);
+    runWorkspaceTransition(
+      () => {
+        setActiveCaseId("damage");
+        setSelectedTicket(null);
+        setSelectedKnowledgeId(null);
+        setMode("online");
+        setGuidedStepIndex(null);
+      },
+      { guidedStartIndex: 0 }
+    );
   };
 
   const moveGuidedTour = (nextIndex: number) => {
@@ -190,19 +244,7 @@ export default function Home() {
     setGuidedStepIndex(nextIndex);
   };
 
-  if (showWelcome) {
-    return (
-      <WelcomeGuide
-        onDirectOpen={openOnlineWorkspace}
-        onStartGuidedTour={startGuidedTour}
-        onOpenOnline={openOnlineWorkspace}
-        onOpenTicketSuggestion={openTicketSuggestionDemo}
-        onOpenKnowledge={openKnowledgeDemo}
-      />
-    );
-  }
-
-  return (
+  const workspaceContent = (
     <main className="flex h-screen overflow-hidden bg-slate-100 text-slate-900">
       <WorkspaceModeSwitch
         mode={mode}
@@ -215,10 +257,7 @@ export default function Home() {
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar
           mode={mode}
-          onBackToWelcome={() => {
-            setGuidedStepIndex(null);
-            setShowWelcome(true);
-          }}
+          onBackToWelcome={runWelcomeTransition}
         />
 
         {mode === "online" ? (
@@ -276,5 +315,39 @@ export default function Home() {
         />
       ) : null}
     </main>
+  );
+
+  return (
+    <div className="relative h-screen overflow-hidden bg-slate-100">
+      {showWelcome ? (
+        <div
+          className={`absolute inset-0 z-20 transition-all duration-300 ${
+            screenTransitionTarget === "workspace"
+              ? "scale-[0.985] opacity-0"
+              : screenTransitionTarget === "welcome"
+                ? "scale-[1.015] opacity-0"
+                : "scale-100 opacity-100"
+          }`}
+        >
+          <WelcomeGuide
+            onDirectOpen={openOnlineWorkspace}
+            onStartGuidedTour={startGuidedTour}
+            onOpenOnline={openOnlineWorkspace}
+            onOpenTicketSuggestion={openTicketSuggestionDemo}
+            onOpenKnowledge={openKnowledgeDemo}
+          />
+        </div>
+      ) : null}
+
+      {showWorkspaceLayer ? (
+        <div
+          className={`absolute inset-0 transition-all duration-300 ${
+            workspaceEntered ? "translate-y-0 scale-100 opacity-100" : "translate-y-2 scale-[1.01] opacity-0"
+          } ${showWelcome ? "pointer-events-none" : ""}`}
+        >
+          {workspaceContent}
+        </div>
+      ) : null}
+    </div>
   );
 }
